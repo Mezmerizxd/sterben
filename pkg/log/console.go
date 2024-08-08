@@ -2,7 +2,7 @@ package log
 
 import "fmt"
 
-type ConsoleWriter struct {}
+type ConsoleWriter struct{}
 
 func NewConsoleWriter() *ConsoleWriter {
 	return &ConsoleWriter{}

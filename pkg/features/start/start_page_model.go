@@ -14,29 +14,29 @@ const (
 )
 
 type StartPageModel struct {
-	cfg  *pages.ModelConfig
-	options    []StartPageOption
-	cursor     StartPageOption
-	counter 	int
+	cfg     *pages.ModelConfig
+	options []StartPageOption
+	cursor  StartPageOption
+	counter int
 }
 
 type StartPageOption struct {
-	id string
-	label string
-	isPage bool
+	id       string
+	label    string
+	isPage   bool
 	function func()
 }
 
 func NewStartPageModel(cfg *pages.ModelConfig) *StartPageModel {
 	m := &StartPageModel{
-		cfg: cfg,
+		cfg:     cfg,
 		counter: 0,
 	}
 
 	m.options = []StartPageOption{
 		{
-			id:    "counter",
-			label: "Enter Counter",
+			id:     "counter",
+			label:  "Enter Counter",
 			isPage: false,
 			function: func() {
 				m.counter++
@@ -81,7 +81,7 @@ func (p *StartPageModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return p.cfg.Pages.SwitchModel(pages.PageType(p.cursor.id))
 			} else {
 				p.cursor.function()
-				return p, nil	
+				return p, nil
 			}
 		default:
 			return p, nil
@@ -114,8 +114,7 @@ func (p *StartPageModel) View() string {
 }
 
 var (
-	spm_titleStyle = lipgloss.NewStyle().Foreground(pages.TextPrimaryStyle).Bold(true).Padding(1).Render
-	spm_textStyle  = lipgloss.NewStyle().Foreground(pages.TextSecondaryStyle).Padding(1).Render
+	spm_titleStyle  = lipgloss.NewStyle().Foreground(pages.TextPrimaryStyle).Bold(true).Padding(1).Render
+	spm_textStyle   = lipgloss.NewStyle().Foreground(pages.TextSecondaryStyle).Padding(1).Render
 	spm_optionStyle = lipgloss.NewStyle().Foreground(pages.TextPrimaryStyle).Bold(true).Padding(1).Render
 )
-

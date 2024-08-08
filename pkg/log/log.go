@@ -15,9 +15,9 @@ var logsFileMode fs.FileMode = 0755
 
 // Config struct holds the configuration options for the logger.
 type Config struct {
-	Feature      string `json:"feature"`       // The name of the feature being logged.
-	ConsoleOutput bool  `json:"consoleOutput"` // Flag to enable/disable console output.
-	FileOutput    bool  `json:"fileOutput"`    // Flag to enable/disable file output.
+	Feature       string `json:"feature"`       // The name of the feature being logged.
+	ConsoleOutput bool   `json:"consoleOutput"` // Flag to enable/disable console output.
+	FileOutput    bool   `json:"fileOutput"`    // Flag to enable/disable file output.
 }
 
 // Log interface defines the methods available for logging.

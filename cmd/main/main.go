@@ -12,9 +12,9 @@ import (
 func main() {
 	// Initialize Log
 	l := log.New(log.Config{
-		Feature: "main",
+		Feature:       "main",
 		ConsoleOutput: false,
-		FileOutput: true,
+		FileOutput:    true,
 	})
 	defer l.Close()
 
@@ -34,22 +34,22 @@ func main() {
 	// Initialize Pages
 	p := pages.Initialize(pages.Config{
 		Log: log.New(log.Config{
-			Feature: "pages",
+			Feature:       "pages",
 			ConsoleOutput: false,
-			FileOutput: true,
+			FileOutput:    true,
 		}),
 	})
 	defer p.Close()
 
 	// Initalize Features
 	startFeatureLog := log.New(log.Config{
-		Feature: "start_feature",
+		Feature:       "start_feature",
 		ConsoleOutput: false,
-		FileOutput: true,
+		FileOutput:    true,
 	})
 	defer startFeatureLog.Close()
 	startFeature := start.NewStartPageModel(&pages.ModelConfig{
-		Log: startFeatureLog,
+		Log:   startFeatureLog,
 		Pages: p,
 	})
 
