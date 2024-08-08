@@ -3,10 +3,10 @@ name: Go Build
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -27,13 +27,21 @@ jobs:
         with:
           go-version: "1.22.2"
 
+      - name: Determine output extension
+        run: |
+          if [[ "${{ matrix.goos }}" == "windows" ]]; then
+            echo "EXT=.exe" >> $GITHUB_ENV
+          else
+            echo "EXT=" >> $GITHUB_ENV
+          fi
+
       - name: Build
         run: |
           mkdir -p dist
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/sterben-${{ matrix.goos }}-${{ matrix.goarch }} cmd/main/main.go
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/sterben-${{ matrix.goos }}-${{ matrix.goarch }}${{ env.EXT }} cmd/main/main.go
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: sterben-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: dist/sterben-${{ matrix.goos }}-${{ matrix.goarch }}
+          name: sterben-${{ matrix.goos }}-${{ matrix.goarch }}${{ env.EXT }}
+          path: dist/sterben-${{ matrix.goos }}-${{ matrix.goarch }}${{ env.EXT }}
