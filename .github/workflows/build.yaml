@@ -1,0 +1,39 @@
+name: Go Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build Go Binary
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.22.2"
+
+      - name: Build
+        run: |
+          mkdir -p dist
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/myprogram-${{ matrix.goos }}-${{ matrix.goarch }} .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sterben-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/sterben-${{ matrix.goos }}-${{ matrix.goarch }}
