@@ -2,11 +2,8 @@ package main
 
 import (
 	"sterben/pkg/config"
-	"sterben/pkg/features/start"
 	"sterben/pkg/log"
 	"sterben/pkg/pages"
-
-	tea "github.com/charmbracelet/bubbletea"
 )
 
 func main() {
@@ -40,31 +37,4 @@ func main() {
 		}),
 	})
 	defer p.Close()
-
-	// Initalize Features
-	startFeatureLog := log.New(log.Config{
-		Feature:       "start_feature",
-		ConsoleOutput: false,
-		FileOutput:    true,
-	})
-	defer startFeatureLog.Close()
-	startFeature := start.NewStartPageModel(&pages.ModelConfig{
-		Log:   startFeatureLog,
-		Pages: p,
-	})
-
-	// Start the Tea Program
-	StartTeaProgram(p, startFeature)
-}
-
-func StartTeaProgram(p *pages.Pages, startFeature *start.StartPageModel) {
-	p.AddModel(start.StartPage, startFeature)
-	p.SwitchModel(start.StartPage)
-
-	tea := tea.NewProgram(p, tea.WithAltScreen(), tea.WithMouseAllMotion())
-
-	_, err := tea.Run()
-	if err != nil {
-		p.Log.Error().Err(err).Msg("Failed to run tea program")
-	}
 }
