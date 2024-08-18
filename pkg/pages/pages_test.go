@@ -8,7 +8,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const testPage PageType = "testPage"
+var testPage PageType = PageType{
+	ID:   "test",
+	Name: "Test",
+}
 
 type mockModel struct{}
 

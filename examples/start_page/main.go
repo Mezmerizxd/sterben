@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
-
 	"sterben/pkg/config"
 	"sterben/pkg/log"
 	"sterben/pkg/pages"
+
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 func main() {
@@ -71,9 +70,10 @@ func StartTeaProgram(p *pages.Pages, startFeature *StartPageModel) {
 	}
 }
 
-const (
-	StartPage pages.PageType = "start"
-)
+var StartPage pages.PageType = pages.PageType{
+	ID:   "start",
+	Name: "Start",
+}
 
 type StartPageModel struct {
 	cfg     *pages.ModelConfig
@@ -83,8 +83,7 @@ type StartPageModel struct {
 }
 
 type StartPageOption struct {
-	id       string
-	label    string
+	page     pages.PageType
 	isPage   bool
 	function func()
 }
@@ -97,8 +96,7 @@ func NewStartPageModel(cfg *pages.ModelConfig) *StartPageModel {
 
 	m.options = []StartPageOption{
 		{
-			id:     "counter",
-			label:  "Enter Counter",
+			page:   StartPage,
 			isPage: false,
 			function: func() {
 				m.counter++
@@ -123,7 +121,7 @@ func (p *StartPageModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return p, tea.Quit
 		case tea.KeyUp:
 			for i, opt := range p.options {
-				if opt.id == p.cursor.id && i > 0 {
+				if opt.page.ID == p.cursor.page.ID && i > 0 {
 					p.cursor = p.options[i-1]
 					break
 				}
@@ -131,7 +129,7 @@ func (p *StartPageModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return p, nil
 		case tea.KeyDown:
 			for i, opt := range p.options {
-				if opt.id == p.cursor.id && i < len(p.options)-1 {
+				if opt.page.ID == p.cursor.page.ID && i < len(p.options)-1 {
 					p.cursor = p.options[i+1]
 					break
 				}
@@ -139,8 +137,8 @@ func (p *StartPageModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return p, nil
 		case tea.KeyEnter:
 			if p.cursor.isPage {
-				p.cfg.Log.Info().Msgf("Switching to %s Page", p.cursor.label)
-				return p.cfg.Pages.SwitchModel(pages.PageType(p.cursor.id))
+				p.cfg.Log.Info().Msgf("Switching to %s Page", p.cursor.page.Name)
+				return p.cfg.Pages.SwitchModel(pages.PageType(p.cursor.page))
 			} else {
 				p.cursor.function()
 				return p, nil
@@ -160,10 +158,10 @@ func (p *StartPageModel) View() string {
 	s += fmt.Sprintf("%s\n", spm_textStyle(fmt.Sprintf("Counter: %d", p.counter)))
 
 	for _, opt := range p.options {
-		if opt.id == p.cursor.id {
-			s += fmt.Sprintf("%s\n", spm_optionStyle(">", opt.label))
+		if opt.page.ID == p.cursor.page.ID {
+			s += fmt.Sprintf("%s\n", spm_optionStyle(">", opt.page.Name))
 		} else {
-			s += fmt.Sprintf("%s\n", spm_textStyle(" ", opt.label))
+			s += fmt.Sprintf("%s\n", spm_textStyle(" ", opt.page.Name))
 		}
 	}
 

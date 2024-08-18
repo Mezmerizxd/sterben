@@ -31,7 +31,10 @@ type ModelConfig struct {
 }
 
 // PageType represents the type of a page, used as a key in the Models map.
-type PageType string
+type PageType struct {
+	ID   string
+	Name string
+}
 
 // Pages manages the application's pages, including navigation and model handling.
 type Pages struct {
@@ -98,7 +101,7 @@ func (p *Pages) AddModel(t PageType, m tea.Model) {
 	defer p.Mutex.Unlock()
 
 	p.Models[t] = m
-	p.Log.Info().Str("page", string(t)).Msg("Added new page")
+	p.Log.Info().Str("page", string(t.ID)).Msg("Added new page")
 }
 
 // RemoveModel removes a model from the Pages instance and logs the action.
@@ -107,7 +110,7 @@ func (p *Pages) RemoveModel(t PageType) {
 	defer p.Mutex.Unlock()
 
 	delete(p.Models, t)
-	p.Log.Info().Str("page", string(t)).Msg("Removed page")
+	p.Log.Info().Str("page", string(t.ID)).Msg("Removed page")
 }
 
 // GetModel retrieves a model from the Pages instance by type.
@@ -129,7 +132,7 @@ func (p *Pages) SwitchModel(t PageType) (tea.Model, tea.Cmd) {
 		return model, model.Init()
 	}
 
-	p.Log.Error().Str("page", string(t)).Msg("Failed to switch to page")
+	p.Log.Error().Str("page", string(t.ID)).Msg("Failed to switch to page")
 	m, err := p.CurrentModel()
 	if err != nil {
 		p.Log.Error().Err(*err).Msg("Failed to get current model")

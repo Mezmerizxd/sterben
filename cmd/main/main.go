@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"sterben/features/youtube"
 	"sterben/pkg/config"
 	"sterben/pkg/log"
-	"sterben/pkg/pages"
+	"sterben/tui"
 )
 
 func main() {
@@ -28,13 +30,25 @@ func main() {
 		l.Info().Msg("Config not loaded")
 	}
 
-	// Initialize Pages
-	p := pages.Initialize(pages.Config{
-		Log: log.New(log.Config{
-			Feature:       "pages",
-			ConsoleOutput: false,
-			FileOutput:    true,
-		}),
-	})
-	defer p.Close()
+	if !youtube.CheckIfYtdlpInstalled() {
+		fmt.Println("yt-dlp is not installed, installing...	")
+		// Attempt to install yt-dlp
+		err := youtube.DownloadYtdlp()
+		if err != nil {
+			l.Error().Err(err).Msg("Failed to download yt-dlp")
+			panic(err)
+		}
+	}
+
+	y, err := tui.Initialize()
+	if err != nil {
+		l.Error().Err(err).Msg("Failed to initialize TUI")
+		panic(err)
+	}
+
+	err = y.Start()
+	if err != nil {
+		l.Error().Err(err).Msg("Failed to start TUI")
+		panic(err)
+	}
 }
